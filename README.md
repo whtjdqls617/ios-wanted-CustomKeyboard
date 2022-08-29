@@ -42,6 +42,49 @@
 
 <br>
 
+## ⚠️ Trouble Shooting
+
+### “종성 이후의 문자에 대한 표시”
+
+- 문제점
+    - 종성 이후에 입력되는 문자를 지우거나 추가하는 것을 반복했을 때 조합이 잘 되지 않음.
+- 원인
+    - 조합표에 의해 조합이 완성된 단어를 고정시켜버리는 바람에 수정했을 때 변화가 일어나지 않음
+- 해결방안
+    - 버퍼에서 추가 입력이 일어났을 때 처음부터 계속 계산할 수 있도록 구현
+    <br>
+    
+    ```swift
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    			if keyboardViewModel.keyboardLayout[indexPath.row] == "Return" || keyboardViewModel.keyboardLayoutWithShift[indexPath.row] == "Return" {
+    		      pressEnter()
+    		  }
+    		  keyboardViewModel.handleKeyboardInput(indexPath.row)
+    		  keyboardViewModel.automata()
+    		  keyboardView.reviewTextLabel.text = KoreanAutomata.AutomataInfo.finalArray.joined(separator: "")
+    }
+    ```
+    
+
+---
+
+## **🤔** 고민한 점
+
+### “버퍼에 글자가 쌓일수록 계산할 때 시간이 오래걸리는데 이를 어떻게 해결해야할까?”
+
+- 고민에 대한 노력
+    - 자료구조를 배열에서 트리로 변경하여 탐색에 좀 더 유용하게 변경하면 어떨까?
+        - 트리는 탐색에 효율적으로 시간 복잡도에 있어서 좋을지 모르지만, 공간 복잡도에서는 효율이 그다지 좋지 못하기 때문에, 위 두개의 사항을 고려해서 최적의 알고리즘을 구현하면 괜찮을 것 같다.
+    - 현재 입력된 글자들은 하나의 버퍼에 담겨져서 입력될 때마다 그 버퍼를 선형 탐색법을 이용하여 계산하는 중인데, 이를 버퍼의 크기가 커졌을 때를 대비하여 해쉬 탐색법으로 변경하여 시간에 대한 효율을 끌어올리는 방법
+        - 해쉬 탐색법의 구현은 기존의 탐색법에 비해 러닝 커브가 있기 때문에, 접근이 쉽지 않지만 자료구조 자체를 바꾸는 것보다는 코드의 수정이 적을 것 같아서 이를 적용할 예정이다.
+
+### “싱글톤 패턴을 굳이 사용해야할까?”
+
+- 고민에 대한 노력
+    - 싱글톤 패턴은 전역에서 싱글톤 인스턴스에서 접근하여 상태를 변경할 수 있는 문제가 있는데, 이번 과제의 규모가 크지 않고 또 싱글톤 인스턴스에 접근할 경우가 많지 않기 때문에, 굳이 변경에 대한 위험을 감수하면서 싱글톤으로 구현할 필요가 없다고 판단
+
+<br>
+
 ## 🔀  Git Branch
 
 개별 브랜치 관리 및 병합의 안정성을 위해 `Git Forking WorkFlow`를 적용했습니다.
